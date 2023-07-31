@@ -13,7 +13,7 @@ const RoomPost = () => {
     description: "",
     amenities: [],
     noOfRooms: "",
-    photo: [],
+    photo: "",
     posted_date: "",
     closing_date: "",
     phone: "",
@@ -33,6 +33,13 @@ const RoomPost = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append("image", file); //"image" as the field name to match the server
+    for (const key in property) {
+      if (property.hasOwnProperty(key)) {
+        formData.append(key, property[key]);
+      }
+    }
     axios
       .post(`http://localhost:8000/api/rooms`, file)
       .then((res) => {
@@ -47,7 +54,8 @@ const RoomPost = () => {
   function handleChange(event)
     {
       if(event.target.type==='file'){
-        setProperty({...property.photo,...event.target.files});
+        setFile(event.target.files[0]);
+        //setProperty({...property.photo,...event.target.files});
       }
       else{
         setProperty({ ...property, [event.target.name]: event.target.value });
@@ -139,13 +147,31 @@ const RoomPost = () => {
                 htmlFor="description"
                 className="block uppercase tracking-wide text-xs font-bold mb-2"
               >
-                Description:
+                Description
               </label>
               <textarea
                 value={property.description}
                 className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="description"
                 name="description"
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className=" mb-3">
+              <label
+                htmlFor="phone"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
+                Phone
+              </label>
+              <input
+                value={property.phone}
+                type="number"
+                className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="phone"
+                name="phone"
                 onChange={handleChange}
                 required
               />
@@ -167,7 +193,7 @@ const RoomPost = () => {
                       id={amenity}
                       name="amenity"
                       checked={PropertyAmenities.includes(amenity)}
-                      onChange={handleAmenityChange(amenity)}
+                      onChange={() =>handleAmenityChange(amenity)}
                     />
                     <label className="" htmlFor={amenity}>
                       {amenity}
@@ -209,10 +235,12 @@ const RoomPost = () => {
                   type="date"
                   className="appearance-none block bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white "
                   id="postedDate"
-                  name="postedDate"
+                  name="posted_date"
                   onChange={handleChange}
+                  pattern="\d{4}-\d{2}-\d{2}"
                   required
-                />
+                /> 
+                {/* fallback function for date */}
               </div>
               <div className="mb-3 col">
                 <label
@@ -226,8 +254,9 @@ const RoomPost = () => {
                   type="date"
                   className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white "
                   id="closingDate"
-                  name="closingDate"
+                  name="closing_date"
                   onChange={handleChange}
+                  pattern="\d{4}-\d{2}-\d{2}"
                   required
                 />
               </div>
@@ -239,7 +268,7 @@ const RoomPost = () => {
               >
                 Main Photo
               </label>
-              {
+              {property.photo &&
                 property.photo.map(photo=>{
                   let src="";
                   if(typeof(photo)==="string"){
@@ -248,7 +277,7 @@ const RoomPost = () => {
                   else{
                     src=URL.createObjectURL(photo)
                   }
-                  return <img src={src} className="m-[10px] w-[150px] h-[150px]"/>
+                  return <img key={src} src={src} className="m-[10px] w-[150px] h-[150px]"/>
                 })
               }
 
