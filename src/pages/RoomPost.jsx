@@ -1,10 +1,10 @@
-import {React,useState} from 'react';
-import axios from 'axios'
-import { Link} from "react-router-dom";
+import { React, useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
-import '../css/renting.css';
 
 const RoomPost = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState();
   const [property, setProperty] = useState({
     address: "",
@@ -16,77 +16,99 @@ const RoomPost = () => {
     photo: [],
     posted_date: "",
     closing_date: "",
-    posted_by: "",
+    phone: "",
   });
+  const AmenitiesList = [
+    "Separate bathroom",
+    "24/7 water facility",
+    "Internet",
+    "Car parking",
+    "Bike parking",
+    "Kitchen slab",
+    "Furnished",
+    "Gym",
+    "Playing court",
+  ];
+  const [PropertyAmenities,setPropertyAmenities]=useState([])
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    axios
+      .post(`http://localhost:8000/api/rooms`, file)
+      .then((res) => {
+        console.log(res);
+        navigate("/"); //user is navigated to the homepage
+      })
+      .catch((err) => {
+        alert(err.msg);
+      });
   };
-  function handleChange(event) {
-    // const { name, value, type, checked } = event.target;
-    // let newValue = value;
 
-    // setProperty((prevProperty) => ({
-    //   ...prevProperty,
-    //   [name]:
-    //     type === "checkbox"
-    //       ? checked
-    //         ? [...prevProperty[name], value]
-    //         : prevProperty[name].filter((item) => item !== value)
-    //       : value,
-    // }));
+  function handleChange(event)
+    {
+      if(event.target.type==='file'){
+        setProperty({...property.photo,...event.target.files});
+      }
+      else{
+        setProperty({ ...property, [event.target.name]: event.target.value });
+      }
+    }
+  
+
+  const handleAmenityChange=(amenity)=>{
+    if(PropertyAmenities.includes(amenity)){
+      setPropertyAmenities(PropertyAmenities.filter((a)=>a!==amenity));   //to uncheck
+    }
+    else{
+      setPropertyAmenities([...PropertyAmenities,amenity]);
+    }
   }
-  const handleUpload = (e) => {
-    // const formdata = new FormData();
-    // formdata.append("file", file);
-    // axios
-    //   .post(`http://localhost:8000/api/upload`, FormData)
-    //   .then((res) => {
-    //     console.log(res);
-    //     // ...
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     // ...
-    //   });
-  };
-
   return (
-    <body className='p-3' style={{ backgroundColor: "#91B3FA" }}>
-      <Link to="/">
-        <BiArrowBack
-          className="position-fixed text-light m-3"
-        />
-      </Link>
-      <div className="container rounded bg-light p-5" style={{ width: "700px",margin: "50px auto" }}>
-      
-        <div className="container-sm">
-          <h5 style={{ color: "#91B3FA" }}>NEED TO RENT YOUR ROOM?</h5>
-          <p className="fs-6">
-            Advertise your room for free with RentYourRoom !
-          </p>
-          <form onSubmit={handleSubmit}>
-            <div className="pt-2 form-group">
-              <label htmlFor="address" className="form-label">
+    <div className="w-full h-full">
+      <div className="flex flex-col h-full justify-center items-center bg-gradient-to-b from-blue-300 to-blue-500">
+        <div className="w-[600px] bg-blue-100 my-20 rounded-lg border-4">
+          <Link to="/">
+            <BiArrowBack className="m-2 text-white position-fixed" />
+          </Link>
+          <form onSubmit={handleSubmit} className="m-10">
+            <p className="text-xl font-semibold mb-4">
+              NEED TO RENT YOUR ROOM?
+            </p>
+            <p className="text-sm mb-6">
+              Advertise your room for free with RentYourRoom !
+            </p>
+
+            <div className="pt-2">
+              <label
+                htmlFor="address"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
                 Property Address
               </label>
               <input
+                value={property.address}
                 type="text"
-                className="form-control"
+                className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="address"
                 name="address"
                 onChange={handleChange}
                 required
               />
             </div>
-            <div className="row mt-3">
-              <div className="mb-3 col">
-                <label htmlFor="price" className="form-label">
+            <div className="flex flex-row justify-between mt-3">
+              <div className="mb-3 col pr-20">
+                <label
+                  htmlFor="price"
+                  className="block uppercase tracking-wide text-xs font-bold mb-2"
+                >
                   Price
                 </label>
                 <input
-                  type="number" min="0" step="1000"
-                  className="form-control"
+                  value={property.price}
+                  type="number"
+                  min="0"
+                  step="1000"
+                  className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                   id="price"
                   name="price"
                   onChange={handleChange}
@@ -94,12 +116,16 @@ const RoomPost = () => {
                 />
               </div>
               <div className="mb-3 col">
-                <label htmlFor="covered-area" className="form-label">
+                <label
+                  htmlFor="covered-area"
+                  className="block uppercase tracking-wide text-xs font-bold mb-2"
+                >
                   Covered Area
                 </label>
                 <input
+                  value={property.coveredArea}
                   type="double"
-                  className="form-control"
+                  className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                   id="coveredArea"
                   name="coveredArea"
                   onChange={handleChange}
@@ -108,47 +134,42 @@ const RoomPost = () => {
               </div>
             </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="description">Description:</label>
+            <div className=" mb-3">
+              <label
+                htmlFor="description"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
+                Description:
+              </label>
               <textarea
-                className="form-control"
+                value={property.description}
+                className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="description"
                 name="description"
-                value={property.description}
                 onChange={handleChange}
                 required
               />
             </div>
 
-            <div className="form-group mb-3">
-              <label>Amenities</label>
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {[
-                  "Separate bathroom",
-                  "24/7 water facility",
-                  "Internet",
-                  "Car parking",
-                  "Bike parking",
-                  "Kitchen slab",
-                  "Furnished",
-                  "Gym",
-                  "Playing court",
-                ].map((amenity) => (
-                  <div
-                    className="form-check"
-                    key={amenity}
-                    style={{ width: "33.33%" }}
-                  >
+            <div className=" mb-3">
+              <label
+                htmlFor="amenity"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
+                Amenities
+              </label>
+              <div className="grid grid-cols-3 grid-rows-3">
+                {AmenitiesList.map((amenity) => (
+                  <div key={amenity}>
                     <input
+                      className="ps-2"
                       type="checkbox"
-                      className="form-check-input"
                       id={amenity}
-                      name="amenities"
-                      value={amenity}
-                      checked={property.amenities.includes(amenity)}
-                      onChange={handleChange}
+                      name="amenity"
+                      checked={PropertyAmenities.includes(amenity)}
+                      onChange={handleAmenityChange(amenity)}
                     />
-                    <label className="form-check-label" htmlFor={amenity}>
+                    <label className="" htmlFor={amenity}>
                       {amenity}
                     </label>
                   </div>
@@ -156,26 +177,37 @@ const RoomPost = () => {
               </div>
             </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="noOfRooms">Number of Rooms</label>
+            <div className="mb-3">
+              <label
+                htmlFor="noOfRooms"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
+                Number of Rooms
+              </label>
               <input
-                type="number" min="1"
-                className="form-control"
+                value={property.noOfRooms}
+                type="number"
+                min="1"
+                className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="noOfRooms"
                 name="noOfRooms"
                 onChange={handleChange}
                 required
               />
             </div>
-            
-            <div className="row my-3">
-              <div className="mb-3 col">
-                <label htmlFor="postedDate" className="form-label">
+
+            <div className="flex flew-row justify-between mb-3">
+              <div className="mb-3">
+                <label
+                  htmlFor="postedDate"
+                  className="block uppercase tracking-wide text-xs font-bold mb-2"
+                >
                   Posted Date
                 </label>
                 <input
+                  value={property.posted_date}
                   type="date"
-                  className="form-control "
+                  className="appearance-none block bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white "
                   id="postedDate"
                   name="postedDate"
                   onChange={handleChange}
@@ -183,12 +215,16 @@ const RoomPost = () => {
                 />
               </div>
               <div className="mb-3 col">
-                <label htmlFor="closingDate" className="form-label">
+                <label
+                  htmlFor="closingDate"
+                  className="block uppercase tracking-wide text-xs font-bold mb-2"
+                >
                   Closing date
                 </label>
                 <input
+                  value={property.closing_date}
                   type="date"
-                  className="form-control "
+                  className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white "
                   id="closingDate"
                   name="closingDate"
                   onChange={handleChange}
@@ -196,35 +232,39 @@ const RoomPost = () => {
                 />
               </div>
             </div>
-            <div className="form-group my-3">
-              <label htmlFor="file" className="form-label">
+            <div className=" my-5">
+              <label
+                htmlFor="image"
+                className="block uppercase tracking-wide text-xs font-bold mb-2"
+              >
                 Main Photo
               </label>
-              <br />
-              <div class="input-group mb-3">
-                <button
-                  class="btn btn-outline-primary"
-                  type="button"
-                  id="inputGroupFileAddon03"
-                >
-                  Upload
-                </button>
-                <input
-                  type="file"
-                  className="form-control"
-                  id="inputGroupFile03"
-                  aria-describedby="inputGroupFileAddon03"
-                  aria-label="Upload"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-              </div>
+              {
+                property.photo.map(photo=>{
+                  let src="";
+                  if(typeof(photo)==="string"){
+                    src=photo
+                  }
+                  else{
+                    src=URL.createObjectURL(photo)
+                  }
+                  return <img src={src} className="m-[10px] w-[150px] h-[150px]"/>
+                })
+              }
+
+              <input
+                type="file"
+                id="inputGroupFile03"
+                aria-describedby="inputGroupFileAddon03"
+                aria-label="Upload"
+                onChange={handleChange}
+              />
             </div>
 
             <div className="text-center">
               <button
                 type="submit"
-                className="btn px-4 text-light mb-2 text-center px-5  "
-                style={{ backgroundColor: "#91B3FA", borderRadius: "30px" }}
+                className="shadow bg-blue-400 hover:bg-blue-500 py-2.5 px-5 rounded-full text-white"
               >
                 Submit for Approval
               </button>
@@ -232,7 +272,7 @@ const RoomPost = () => {
           </form>
         </div>
       </div>
-    </body>
+    </div>
   );
 };
 

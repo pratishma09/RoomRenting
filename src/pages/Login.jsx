@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios"; //for making HTTP requests
-import { Link,useNavigate } from "react-router-dom"; //for programmatic navigation
+import { Link, useNavigate } from "react-router-dom"; //for programmatic navigation
 import { BiArrowBack } from "react-icons/bi";
-import "../css/App.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [payload, setPayload] = useState({
-    email:'',
-    password:''
+    email: "",
+    password: "",
   });
 
   const handleSubmit = (event) => {
@@ -31,92 +30,87 @@ const Login = () => {
   }
 
   return (
-    <body style={{ backgroundColor: "#91B3FA" }}>
+    <div className="flex items-start w-full h-full">
       <Link to="/">
-        <BiArrowBack className="m-3 text-light position-fixed" />
+        <BiArrowBack className="m-3 text-blue-400 position-fixed" />
       </Link>
-      <div className="d-flex justify-content-center align-items-center rounded loginContainer">
-        <div className="box-1 d-flex flex-column p-5 rounded-start-2 bg-light">
-          <div className="mt-5">
-            <h6>
-              Login to {" "}
-              <u>
-                <Link to="/">RentYourRoom</Link>
-              </u>
-              !
-            </h6>
-            <p className="text-muted mb-2">
-              Experience the simplicity of room renting at your fingertips.
-            </p>
+      <div className="flex flex-col w-1/2 h-screen p-20 place-content-center">
+        <p className="text-xl font-semibold mb-4">
+          Login to{" "}
+          <Link className="text-blue-400" to="/">
+            RentYourRoom
+          </Link>
+        </p>
+        <p className="text-sm mb-6">
+          Experience the simplicity of room renting at your fingertips.
+        </p>
 
-            <form onSubmit={handleSubmit}>
-              <div className="pt-3">
-                <label htmlFor="email" className="form-label">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="exampleCheck1"
-                  required
-                />
-                <label className="form-check-label" for="exampleCheck1">
-                  Remember password
-                </label>
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="btn px-4 text-light mb-2 text-center px-5  "
-                  style={{ backgroundColor: "#91B3FA", borderRadius: "30px" }}
-                >
-                  Login
-                </button>
-                <ul className="list-inline px-3">
-                  <li className="list-inline-item fw-lighter fs-6 text-center fst-italic">
-                    Don't have an account?
-                  </li>
-                  <li className="list-inline-item text-decoration-underline">
-                    <Link to="/signup" style={{ color: "#91B3FA" }}>
-                      Sign in Now
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </form>
+        <form onSubmit={handleSubmit}>
+          <div className="py-3">
+            <label
+              htmlFor="email"
+              className="block uppercase tracking-wide text-xs font-bold mb-2 "
+            >
+              Email address
+            </label>
+            <input
+              type="email"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+              id="email"
+              name="email"
+              onChange={handleChange}
+              required
+            />
           </div>
-        </div>
-        <div
-          className="box-1 mt-md-0 mt-5 rounded-end-2 p-4 div-content"
-          style={{ backgroundColor: "#D5D5D5" }}
-        >
-          <img src={require("../images/login.png")} alt="Login" style={{ maxWidth: "100%", height: "auto" }} />
-        </div>
+          <div className="pb-3">
+            <label
+              htmlFor="password"
+              className="block uppercase tracking-wide text-xs font-bold mb-2"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+              id="password"
+              name="password"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-3 inline-flex">
+            <input
+              type="checkbox"
+              id="exampleCheck1"
+              required
+            />
+            <label className="text-sm ms-2" for="exampleCheck1">
+              Remember password
+            </label>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="pt-5 py-3">
+              <button
+                type="submit"
+                className="shadow bg-blue-400 hover:bg-blue-500 py-2.5 px-5 rounded-full text-white"
+              >
+                Login
+              </button>
+            </div>
+            <div className="flex flex-row">
+              <p className="text-sm italic pt-1">Don't have an account?</p>
+              <p className=" text-lg ps-1 text-blue-400 hover:text-blue-500">
+                <Link to="/signup">Sign in Now</Link>
+              </p>
+            </div>
+          </div>
+        </form>
       </div>
-    </body>
+      <img
+        src={require("../images/login2.png")}
+        className="lg:w-1/2 h-screen flex flex-col p-10"
+      />
+    </div>
   );
 };
 

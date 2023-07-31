@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 
 function Signup() {
@@ -32,134 +32,137 @@ function Signup() {
   }
 
   return (
-    <body style={{ backgroundColor: "#91B3FA" }}>
-      <Link to="/">
-        <BiArrowBack className="m-3 position-fixed" style={{ color: "#91B3FA" }}/>
-      </Link>
-      <div className="d-flex justify-content-center align-items-center rounded bg-light loginContainer">
-        <div className="box-1 mt-md-0 mt-5 rounded-end-2 p-4 position-relative div-content">
-        <p className="position-absolute top-0">
-      </p>
-        <p className="text-center fw-semibold fs-4" style={{ color: "#1C3770" }}>
-            JOIN US NOW !
-          </p>
-        <img
-            src={require("../images/signup2.png")}
-            alt="Signup"
-          />
-          
-          <p
-            className="fw-lighter fst-italic lh-1 text-body-tertiary text-center mx-auto position-absolute bottom-0 start-50 translate-middle-x"
-            style={{ width: "27rem" }}
-          >
-            Whether you're a student, professional, or traveler, our platform
-            connects you with a variety of affordable and comfortable
-            accommodations. Create your account now and start exploring a world
-            of hassle-free room rentals.
-          </p>
+    <div className="flex items-start justify-around w-full h-screen">
+      <div className="flex flex-row w-full">
+        <Link to="/">
+          <BiArrowBack className="m-3 text-blue-400" />
+        </Link>
+        <div className="flex flex-row relative w-1/2">
+          <div className="absolute top-[10%] left-[10%]">
+            <p className="text-2xl text-blue-400 font-semibold text-center pb-3">
+              JOIN US NOW !
+            </p>
+
+            <img
+              src={require("../images/signup2.png")}
+              alt="Signup"
+              className=""
+            />
+
+            <p className="text-center text-base font-extralight italic ps-5">
+              Whether you're a student, professional, or traveler, our platform
+              connects you with a variety of affordable and comfortable
+              accommodations. Create your account now and start exploring a
+              world of hassle-free room rentals.
+            </p>
+          </div>
         </div>
-        <div className="box-1 d-flex flex-column p-5 rounded-start-2 bg-light shadow-lg">
-        <div className="mt-5">
-          <h6>
-            Welcome to{" "}
-            <u>
-              <Link to="/" style={{ color: "#91B3FA" }}>
+
+        {/* Row 2: Form */}
+        <div className="flex flex-row m-10 w-1/2">
+          <div className="flex flex-col px-10 py-20">
+            <p className="text-xl font-semibold mb-2">
+              Welcome to{" "}
+              <Link className="text-blue-400" to="/">
                 RentYourRoom
-              </Link>
-            </u>{" "}
-            !{" "}
-          </h6>
-          Sign up and discover a seamless way to find and rent rooms.
-          <form onSubmit={handleSubmit}>
-            <div className="row mt-3">
-              <div className="mb-3 col">
-                <label htmlFor="name" className="form-label">
-                  First Name
+              </Link>{" "}
+            </p>
+            <p className="text-sm">
+              Sign up and discover a seamless way to find and rent rooms.
+            </p>
+
+            <form onSubmit={handleSubmit} className="w-full max-w-lg pt-10">
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <label htmlFor="name" className="block uppercase tracking-wide text-xs font-bold mb-2">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                    id="firstname"
+                    name="firstname"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <label htmlFor="name" className="block uppercase tracking-wide text-xs font-bold mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                    id="lastname"
+                    name="lastname"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-6">
+                <label htmlFor="email" className="block uppercase tracking-wide text-xs font-bold mb-2">
+                  Email address
                 </label>
                 <input
-                  type="text"
-                  className="form-control "
-                  id="firstname"
-                  name="firstname"
+                  type="email"
+                  className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                  id="email"
+                  name="email"
                   onChange={handleChange}
                   required
                 />
               </div>
-              <div className="mb-3 col">
-                <label htmlFor="name" className="form-label">
-                  Last Name
+              <div className="mb-3">
+                <label htmlFor="password" className="block uppercase tracking-wide text-xs font-bold mb-2">
+                  Password
                 </label>
                 <input
-                  type="text"
-                  className="form-control "
-                  id="lastname"
-                  name="lastname"
+                  type="password"
+                  className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                  id="password"
+                  name="password"
                   onChange={handleChange}
                   required
                 />
               </div>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email address
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="exampleCheck1"
-                required
-              />
-              <label className="form-check-label" for="exampleCheck1">
-                I accept the terms and conditions.
-              </label>
-            </div>
-            <div className="text-center">
-              <button
-                type="submit"
-                className="btn px-4 text-light mb-2 text-center px-5"
-                style={{ backgroundColor: "#91B3FA", borderRadius: "30px" }}
-              >
-                Sign In
-              </button>
-              <ul className="list-inline pt-3">
-                <li className="list-inline-item fw-lighter fs-6 text-center fst-italic">
-                  Have an account?
-                </li>
-                <li className="list-inline-item text-decoration-underline">
-                  <Link to="/login" style={{ color: "#91B3FA" }}>
-                    Login Now
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </form>
-        </div>
+              <div className="mb-3 inline-flex">
+                <input
+                  type="checkbox"
+                  id="exampleCheck1"
+                  required
+                />
+                <label
+                  className=" text-sm ms-2"
+                  for="exampleCheck1"
+                >
+                  I accept the terms and conditions.
+                </label>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="pt-5 py-3">
+                  <button
+                    type="submit"
+                    className="shadow bg-blue-400 hover:bg-blue-500 py-2.5 px-5 rounded-full text-white">
+                    Sign In
+                  </button>
+                </div>
+                <div className="flex flex-row">
+                  <p className="text-sm italic pt-1">
+                    Have an account?
+                  </p>
+                  <p className=" text-lg ps-1 text-blue-400 hover:text-blue-500">
+                    <Link to="/login">
+                      Login Now
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </body>
+    </div>
   );
 }
 
