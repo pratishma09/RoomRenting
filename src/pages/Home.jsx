@@ -12,17 +12,6 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [room, setRoom] = useState({});
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://localhost:8000//room?search={search}`)
-  //     .then((res) => {
-  //       console.log(res);
-  //       setRoom(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, [search]);
   const handleSearch=(e)=>{
     e.preventDefault();
     axios.post(`http://localhost:8000/api/rooms?search={search}`, room)
@@ -198,7 +187,7 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <Popup isVisible={showPopUp} onClose={() => setShowPopUp(false)} />
+      <Popup isVisible={showPopUp} onClose={() => setShowPopUp(false)} key={room._id}/>
       <Footer />
     </div>
   );
