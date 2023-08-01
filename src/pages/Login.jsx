@@ -21,7 +21,7 @@ const Login = () => {
         navigate("/"); //user is navigated to the homepage
       })
       .catch((err) => {
-        alert(err.msg);
+        alert("Invalid credentials");
       });
   };
 

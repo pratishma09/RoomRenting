@@ -11,9 +11,7 @@ const RoomPost = () => {
     price: "",
     coveredArea: "",
     description: "",
-    amenities: [],
     noOfRooms: "",
-    photo: "",
     posted_date: "",
     closing_date: "",
     phone: "",
@@ -33,15 +31,19 @@ const RoomPost = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const formData = new FormData();
-    formData.append("image", file); //"image" as the field name to match the server
+    formData.append("images", file); //"image" as the field name to match the server
+    PropertyAmenities.forEach(str => {  //since it is an array
+      formData.append("amenities[]", str);
+    })
     for (const key in property) {
       if (property.hasOwnProperty(key)) {
         formData.append(key, property[key]);
       }
     }
     axios
-      .post(`http://localhost:8000/api/rooms`, file)
+      .post(`http://localhost:8000/api/rooms`, formData)
       .then((res) => {
         console.log(res);
         navigate("/"); //user is navigated to the homepage
@@ -55,7 +57,6 @@ const RoomPost = () => {
     {
       if(event.target.type==='file'){
         setFile(event.target.files[0]);
-        //setProperty({...property.photo,...event.target.files});
       }
       else{
         setProperty({ ...property, [event.target.name]: event.target.value });
@@ -63,17 +64,17 @@ const RoomPost = () => {
     }
   
 
-  const handleAmenityChange=(amenity)=>{
-    if(PropertyAmenities.includes(amenity)){
-      setPropertyAmenities(PropertyAmenities.filter((a)=>a!==amenity));   //to uncheck
+  const handleAmenityChange=(amenities)=>{
+    if(PropertyAmenities.includes(amenities)){
+      setPropertyAmenities(PropertyAmenities.filter((a)=>a!==amenities));   //to uncheck
     }
     else{
-      setPropertyAmenities([...PropertyAmenities,amenity]);
+      setPropertyAmenities([...PropertyAmenities,amenities]);
     }
   }
   return (
-    <div className="w-full h-full">
-      <div className="flex flex-col h-full justify-center items-center bg-gradient-to-b from-blue-300 to-blue-500">
+    <div className="w-full h-full bg-gradient-to-b from-blue-300 to-blue-500">
+      <div className="flex flex-col h-full justify-center items-center ">
         <div className="w-[600px] bg-blue-100 my-20 rounded-lg border-4">
           <Link to="/">
             <BiArrowBack className="m-2 text-white position-fixed" />
@@ -115,7 +116,6 @@ const RoomPost = () => {
                   value={property.price}
                   type="number"
                   min="0"
-                  step="1000"
                   className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                   id="price"
                   name="price"
@@ -179,24 +179,24 @@ const RoomPost = () => {
 
             <div className=" mb-3">
               <label
-                htmlFor="amenity"
+                htmlFor="amenities"
                 className="block uppercase tracking-wide text-xs font-bold mb-2"
               >
                 Amenities
               </label>
               <div className="grid grid-cols-3 grid-rows-3">
-                {AmenitiesList.map((amenity) => (
-                  <div key={amenity}>
+                {AmenitiesList.map((amenities) => (  //AmenitiesList array
+                  <div key={amenities}>
                     <input
                       className="ps-2"
                       type="checkbox"
-                      id={amenity}
-                      name="amenity"
-                      checked={PropertyAmenities.includes(amenity)}
-                      onChange={() =>handleAmenityChange(amenity)}
+                      id={amenities}
+                      name="amenities"
+                      checked={PropertyAmenities.includes(amenities)}
+                      onChange={() =>handleAmenityChange(amenities)}
                     />
-                    <label className="" htmlFor={amenity}>
-                      {amenity}
+                    <label className="" htmlFor={amenities}>
+                      {amenities}
                     </label>
                   </div>
                 ))}
@@ -237,7 +237,7 @@ const RoomPost = () => {
                   id="postedDate"
                   name="posted_date"
                   onChange={handleChange}
-                  pattern="\d{4}-\d{2}-\d{2}"
+                  pattern="\d{4}-\d{2}-\d{2}" //year-month-day form i.e 4digits-2digits-2digits
                   required
                 /> 
                 {/* fallback function for date */}
@@ -263,7 +263,7 @@ const RoomPost = () => {
             </div>
             <div className=" my-5">
               <label
-                htmlFor="image"
+                htmlFor="images"
                 className="block uppercase tracking-wide text-xs font-bold mb-2"
               >
                 Main Photo
@@ -275,7 +275,7 @@ const RoomPost = () => {
                     src=photo
                   }
                   else{
-                    src=URL.createObjectURL(photo)
+                    src=URL.createObjectURL(photo) //to convert binary form into image
                   }
                   return <img key={src} src={src} className="m-[10px] w-[150px] h-[150px]"/>
                 })
@@ -283,6 +283,7 @@ const RoomPost = () => {
 
               <input
                 type="file"
+                name="photo"
                 id="inputGroupFile03"
                 aria-describedby="inputGroupFileAddon03"
                 aria-label="Upload"

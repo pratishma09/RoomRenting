@@ -23,7 +23,7 @@ function Signup() {
       })
       .catch((err) => {
         console.log({ err });
-        alert(err);
+        alert("Set up proper credentials.");
       });
   }
 

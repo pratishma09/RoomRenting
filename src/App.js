@@ -16,7 +16,7 @@ function App() {
           <Route path='login' element={<Login/>}/>
           <Route path='signup' element={<Signup/>}/>
           <Route path='RoomPost' element={<RoomPost/>}/>
-          <Route path='search' element={<Search/>}/>
+          <Route path='search/:search' element={<Search/>}/>
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,25 +1,21 @@
 import { React, useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import { BiSearch } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Popup from "../components/Popup";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Search from "./Search";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
   const [search, setSearch] = useState("");
-  const [rooms, setrooms] = useState([]);
-  const [visible, setVisible] = useState(4);
+  const [rooms, setRooms] = useState([]);
+  const [visible, setVisible] = useState(6);
 
   const showMoreItems = () => {
-    setVisible((preValue) => preValue + 4);
+    setVisible((preValue) => preValue + 3);
   };
-
-  const handlePopUp=()=>{
-    setShowPopUp(!showPopUp);
-  }
 
   const debounce = (mainFunc, delay) => {
     let timer;
@@ -31,32 +27,34 @@ const Home = () => {
     };
   };
 
-  const fetchRooms = () => {
+  function fetchJobs() {
     axios
       .get(`http://localhost:8000/api/rooms?search=${search}`)
       .then((res) => {
         console.log(res.data.items);
-        setrooms(res.data.items);
+        setRooms(res.data.items);
       })
       .catch((err) => {
-        console.log(err.msg);
+        console.log(err);
       });
-  };
+  }
 
   useEffect(() => {
-    const debouncedFetchRooms = debounce(fetchRooms, 500);
-    debouncedFetchRooms();
-  }, [search]);   //defines how many times it will be executed
+    const debouncedFetchJobs = debounce(fetchJobs, 500);
+    debouncedFetchJobs();
+  }, [search]);
 
   return (
-    <div className="w-screen">
+    <div>
       <Navbar />
-      <div className="relative w-screen">
+
+      <div className="relative w-full">
         <img src={require("../images/home.jpg")} className="w-full" />
         <div className="flex flex-col absolute top-20 px-[500px] ">
           <p className="font-semibold text-5xl pt-20 text-white">
             ROOMS EVERYWHERE
           </p>
+
           <div className="flex flex-row left-1/2 bg-white py-5 px-5 rounded-xl mt-20">
             <input
               type="search"
@@ -64,23 +62,26 @@ const Home = () => {
               name="search"
               className=" italic text-gray-500 text-sm px-20 outline-none"
               placeholder="search location"
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-
-            { search && 
-            <Link to={`/Search/${search}`}>
-              <BiSearch className="text-blue-400 text-lg font-semibold"/>
-            </Link>
-            }
+            <button
+              type="submit"
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <BiSearch className="text-blue-400 text-lg font-semibold " />
+            </button>
           </div>
         </div>
       </div>
       <div className="px-5">
         <p className="text-blue-400 italic text-md mt-5">
-          Find the rooms that fits your lifestyle.
+          Find the room that fits your lifestyle.
         </p>
         <p className="text-slate-500 italic text-sm">
-          We have a solution for all your rooms queries.
+          We have a solution for all your room queries.
         </p>
         <p className="font-semibold text-blue-400 mt-5">Popular</p>
         <div className="flex flex-row justify-between mt-3 text-center">
@@ -89,9 +90,7 @@ const Home = () => {
               className=" text-white font-semibold "
               onClick={() => setSearch("Chabahil")}
             >
-              <Link to={`/Search/${search}`}>
               Chabahil
-              </Link>
             </button>
           </div>
           <div className="bg-blue-400 w-[200px] h-100 rounded-xl ml-2">
@@ -99,19 +98,15 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Kalanki")}
             >
-              <Link to={`/Search/${search}`}>
               Kalanki
-              </Link>
             </button>
           </div>
           <div className="bg-blue-400 w-[200px] h-100 rounded-xl ml-2">
             <button
               className=" text-white font-semibold py-20"
-              onClick={() => setSearch("Koteshwor")}
+              onClick={() => setSearch("kathmandu")}
             >
-              <Link to={`/Search/${search}`}>
-              Koteshwor
-              </Link>
+              kathmandu
             </button>
           </div>
           <div className="bg-blue-400 w-[200px] h-100 rounded-xl ml-2">
@@ -119,9 +114,7 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Satdobato")}
             >
-              <Link to={`/Search/${search}`}>
               Satdobato
-              </Link>
             </button>
           </div>
           <div className="bg-blue-400 w-[200px] h-100 rounded-xl ml-2">
@@ -129,12 +122,11 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Lazimpat")}
             >
-              <Link to={`/Search/${search}`}>
               Lazimpat
-              </Link>
             </button>
           </div>
         </div>
+
         <div className="flex flex-row m-auto w-[500px] h-[201px] shadow-2xl rounded-2xl mt-10">
           <div className="w-[500px] h-[201px] pl-5 m-auto py-10">
             <p className="font-semibold uppercase text-blue-600 pb-20">
@@ -153,42 +145,48 @@ const Home = () => {
         </div>
         <div>
           <p className="font-semibold text-blue-400 mt-10 mb-5">Newest</p>
+
           <div className="grid grid-cols-4">
-            {rooms.slice(0, visible).map((rooms) => (
-              <button className="card p-2" onClick={handlePopUp} key={rooms._id}>
-                {/* {rooms.photos.length === 0 ? ( */}
-                  {/* <img src={require("../images/login2.png")} />
-                ) : ( */}
-                  <img src={rooms.photos} />
-                {/* )} */}
+            {rooms.slice(0, visible).map((room) => (
+              <button className="card" onClick={setShowPopUp} key={room._id}>
+                {room.images.length === 0 ? (
+                  <img src={require("../images/login2.png")} />
+                ) : (
+                  <img src={require("../images/login2.png")} />
+                )}
                 <div className="flex flex-row justify-between">
                   <div>
-                    <p className="text-blue-400 text-sm">{rooms.address}</p>
+                    <p className="text-blue-400 text-sm">{room.address}</p>
                     <p className="italic text-xs text-gray-700 mt-2 pl-2">
-                      No. of rooms: {rooms.noOfRooms}
+                      No. of rooms: {room.noOfRooms}
                     </p>
                   </div>
                   <div>
                     <p className="italic text-xs text-gray-700">
-                      Rs. {rooms.price}
+                      Rs. {room.price}
                     </p>
+
                     <button
                       className="pt-6 italic text-xs text-gray-400"
-                      onClick={handlePopUp}
+                      onClick={setShowPopUp}
                     >
                       View more {">"}
                     </button>
                     <Popup
                       isVisible={showPopUp}
-                      rooms={rooms}
-                      onClose={handlePopUp}
+                      onClose={() => setShowPopUp(false)}
+                      room={room}
                     />
                   </div>
                 </div>
               </button>
             ))}
           </div>
-          <button className="font-semibold text-blue-400 mt-10 text-center w-screen pb-5 hover:text-blue-500" onClick={showMoreItems}>
+
+          <button
+            className="font-semibold text-blue-400 mt-10 text-center w-full hover:text-blue-500"
+            onClick={showMoreItems}
+          >
             View more {">"}
           </button>
         </div>
