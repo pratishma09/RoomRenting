@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import axios from "axios"; //for making HTTP requests
 import { Link, useNavigate } from "react-router-dom"; //for programmatic navigation
 import { BiArrowBack } from "react-icons/bi";
+import { useSignIn } from 'react-auth-kit';
 
 const Login = () => {
   const navigate = useNavigate();
+  const login=useSignIn();
   const [payload, setPayload] = useState({
     email: "",
     password: "",
   });
+  const [error,setError]=useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -18,10 +21,23 @@ const Login = () => {
       .post(`http://localhost:8000/api/login`, payload)
       .then((res) => {
         console.log(res);
+        localStorage.setItem("hasLoggedIn",true)
+        //from authtoken website
+        // if(login(
+        //   {
+        //       token: res.data.token,
+        //       expiresIn:res.data.expiresIn,
+        //       tokenType: "Bearer",
+        //       authState: res.data.authUserState,
+        //       refreshToken: res.data.refreshToken,                    // Only if you are using refreshToken feature
+        //       refreshTokenExpireIn: res.data.refreshTokenExpireIn     // Only if you are using refreshToken feature
+        //   }))
         navigate("/"); //user is navigated to the homepage
+        alert("Account logged in");
       })
       .catch((err) => {
-        alert("Invalid credentials");
+        console.log(err.response.data.msg);
+        setError(err.response.data.msg);
       });
   };
 
@@ -46,7 +62,7 @@ const Login = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div className="py-3">
+          <div className="pt-3">
             <label
               htmlFor="email"
               className="block uppercase tracking-wide text-xs font-bold mb-2 "
@@ -62,7 +78,7 @@ const Login = () => {
               required
             />
           </div>
-          <div className="pb-3">
+          <div className="pt-3">
             <label
               htmlFor="password"
               className="block uppercase tracking-wide text-xs font-bold mb-2"
@@ -78,11 +94,11 @@ const Login = () => {
               required
             />
           </div>
+          {error && <p className="text-red-500 text-sm my-2">{error}</p>}
           <div className="mb-3 inline-flex">
             <input
               type="checkbox"
               id="exampleCheck1"
-              required
             />
             <label className="text-sm ms-2" for="exampleCheck1">
               Remember password

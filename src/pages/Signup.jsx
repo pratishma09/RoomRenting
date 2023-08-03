@@ -11,6 +11,7 @@ function Signup() {
     email: "email@email.com",
     password: "password",
   });
+  const[error,setError]=useState("")
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -19,11 +20,12 @@ function Signup() {
       .post(`http://localhost:8000/api/signup`, payload)
       .then((res) => {
         console.log({ res });
-        navigate("/");
+        navigate("/Login");
+        alert("Account created");
       })
       .catch((err) => {
-        console.log({ err });
-        alert("Set up proper credentials.");
+        console.log(err.response.data.error);
+        setError(err.response.data.error);
       });
   }
 
@@ -112,6 +114,7 @@ function Signup() {
                   onChange={handleChange}
                   required
                 />
+                {error && <p className="text-red-500 text-sm my-2">{error}</p>}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="block uppercase tracking-wide text-xs font-bold mb-2">

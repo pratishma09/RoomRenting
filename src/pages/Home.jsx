@@ -2,26 +2,31 @@ import { React, useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import { BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import Popup from "../components/Popup";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Search from "./Search";
+import RoomCard from "../components/RoomCard";
+
 
 const Home = () => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [rooms, setrooms] = useState([]);
   const [visible, setVisible] = useState(4);
-
+  
   const showMoreItems = () => {
-    setVisible((preValue) => preValue + 4);
+    setVisible((preValue) => preValue + 8);
+    console.log()
   };
+
+  const showLessItems=()=>{
+    setVisible(4);
+  }
 
   const handlePopUp=()=>{
     setShowPopUp(!showPopUp);
   }
 
-  const debounce = (mainFunc, delay) => {
+  const debounce = (mainFunc, delay=500) => {
     let timer;
     return function () {
       clearTimeout(timer);
@@ -44,7 +49,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const debouncedFetchRooms = debounce(fetchRooms, 500);
+    const debouncedFetchRooms = debounce(fetchRooms);
     debouncedFetchRooms();
   }, [search]);   //defines how many times it will be executed
 
@@ -52,9 +57,9 @@ const Home = () => {
     <div className="w-screen">
       <Navbar />
       <div className="relative w-screen">
-        <img src={require("../images/home.jpg")} className="w-full" />
+        <img src={require("../images/home.jpg")} className="w-full" alt={require("../images/home.jpg")}/>
         <div className="flex flex-col absolute top-20 px-[500px] ">
-          <p className="font-semibold text-5xl pt-20 text-white">
+          <p className="font-semibold text-5xl pt-20 text-gray-500">
             ROOMS EVERYWHERE
           </p>
           <div className="flex flex-row left-1/2 bg-white py-5 px-5 rounded-xl mt-20">
@@ -62,7 +67,7 @@ const Home = () => {
               type="search"
               id="search"
               name="search"
-              className=" italic text-gray-500 text-sm px-20 outline-none"
+              className=" italic text-gray-600 text-sm px-20 outline-none"
               placeholder="search location"
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -89,7 +94,7 @@ const Home = () => {
               className=" text-white font-semibold "
               onClick={() => setSearch("Chabahil")}
             >
-              <Link to={`/Search/${search}`}>
+              <Link to={`/Search/Chabahil`}>
               Chabahil
               </Link>
             </button>
@@ -99,7 +104,7 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Kalanki")}
             >
-              <Link to={`/Search/${search}`}>
+              <Link to={`/Search/Kalanki`}>
               Kalanki
               </Link>
             </button>
@@ -109,7 +114,7 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Koteshwor")}
             >
-              <Link to={`/Search/${search}`}>
+              <Link to={`/Search/Koteshwor`}>
               Koteshwor
               </Link>
             </button>
@@ -119,7 +124,7 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Satdobato")}
             >
-              <Link to={`/Search/${search}`}>
+              <Link to={`/Search/Satdobato`}>
               Satdobato
               </Link>
             </button>
@@ -129,7 +134,7 @@ const Home = () => {
               className=" text-white font-semibold py-20"
               onClick={() => setSearch("Lazimpat")}
             >
-              <Link to={`/Search/${search}`}>
+              <Link to={`/Search/Lazimpat`}>
               Lazimpat
               </Link>
             </button>
@@ -141,56 +146,39 @@ const Home = () => {
               Post your property
             </p>
             <button className="text-white bg-gradient-to-b from-blue-300 to-blue-600 px-3 py-2 rounded-xl">
+              {
+                localStorage.getItem("hasLoggedIn")?
               <Link to="./RoomPost">FREE</Link>
+              :
+              <Link to="./Login">FREE</Link>
+              }
             </button>
           </div>
           <div>
             <img
               src={require("../images/post.png")}
               className="w-[500px] h-[200px] pt-5"
+              alt={require("../images/post.png")}
             />
           </div>
         </div>
         <div>
           <p className="font-semibold text-blue-400 mt-10 mb-5">Newest</p>
           <div className="grid grid-cols-4">
-            {rooms.slice(0, visible).map((rooms) => (
-              <button className="card p-2" onClick={handlePopUp} key={rooms._id}>
-                {/* {rooms.photos.length === 0 ? ( */}
-                  {/* <img src={require("../images/login2.png")} />
-                ) : ( */}
-                  <img src={rooms.photos} />
-                {/* )} */}
-                <div className="flex flex-row justify-between">
-                  <div>
-                    <p className="text-blue-400 text-sm">{rooms.address}</p>
-                    <p className="italic text-xs text-gray-700 mt-2 pl-2">
-                      No. of rooms: {rooms.noOfRooms}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="italic text-xs text-gray-700">
-                      Rs. {rooms.price}
-                    </p>
-                    <button
-                      className="pt-6 italic text-xs text-gray-400"
-                      onClick={handlePopUp}
-                    >
-                      View more {">"}
-                    </button>
-                    <Popup
-                      isVisible={showPopUp}
-                      rooms={rooms}
-                      onClose={handlePopUp}
-                    />
-                  </div>
-                </div>
-              </button>
+            { 
+            rooms.slice(0, visible).map((room) => (
+              <RoomCard room={room} />
             ))}
           </div>
+          {visible==4?
           <button className="font-semibold text-blue-400 mt-10 text-center w-screen pb-5 hover:text-blue-500" onClick={showMoreItems}>
             View more {">"}
           </button>
+          :
+          <button className="font-semibold text-blue-400 mt-10 text-center w-screen pb-5 hover:text-blue-500" onClick={showLessItems}>
+            View less {">"}
+          </button>
+          }
         </div>
       </div>
       <Footer />

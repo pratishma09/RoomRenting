@@ -4,6 +4,7 @@ import { Link, useNavigate , useParams  } from "react-router-dom"; //for program
 import { BiArrowBack } from "react-icons/bi";
 import Popup from "../components/Popup";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Search=()=>{
   const[showPopUp, setShowPopUp]=useState(false);
@@ -53,11 +54,7 @@ const Search=()=>{
 
             {rooms.slice(0, visible).map((rooms) => (
               <button className="card p-2" onClick={handlePopUp} key={rooms._id}>
-                {/* {rooms.photos.length === 0 ? ( 
-                   <img src={require("../images/login2.png")} />
-                ) : ( */}
-                  <img src={rooms.photos} />
-                 {/* )}  */}
+                  <img src={`http://localhost:8000/uploads/${rooms.images}`} />
                 <div className="flex flex-row justify-between">
                   <div>
                     <p className="text-blue-400 text-sm">{rooms.address}</p>
@@ -91,6 +88,7 @@ const Search=()=>{
           <h1>No results found.</h1>
           }
         </div>
+        <Footer/>
         </div>
     )
 }
