@@ -5,13 +5,17 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import RoomCard from "../components/RoomCard";
-
+import image from "../images/home.jpg";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 const Home = () => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [search, setSearch] = useState("");
   const [rooms, setrooms] = useState([]);
   const [visible, setVisible] = useState(4);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [loading,setLoading]=useState(false);
   
   const showMoreItems = () => {
     setVisible((preValue) => preValue + 8);
@@ -38,10 +42,11 @@ const Home = () => {
 
   const fetchRooms = () => {
     axios
-      .get(`http://localhost:8000/api/rooms?search=${search}`)
+      .get(`http://localhost:8000/api/rooms?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`)
       .then((res) => {
-        console.log(res.data.items);
-        setrooms(res.data.items);
+        setrooms(res.data);
+        setLoading(true);
+        
       })
       .catch((err) => {
         console.log(err.msg);
@@ -51,33 +56,52 @@ const Home = () => {
   useEffect(() => {
     const debouncedFetchRooms = debounce(fetchRooms);
     debouncedFetchRooms();
-  }, [search]);   //defines how many times it will be executed
+  }, [search, minPrice, maxPrice]);   //defines how many times it will be executed
 
   return (
-    <div className="w-screen">
+    <div>
+      {
+      loading?
+      <div>
       <Navbar />
-      <div className="relative w-screen">
-        <img src={require("../images/home.jpg")} className="w-full" alt={require("../images/home.jpg")}/>
-        <div className="flex flex-col absolute top-20 px-[500px] ">
-          <p className="font-semibold text-5xl pt-20 text-gray-500">
+      <div className="relative w-screen bg-cover h-screen" style={{backgroundImage:`url(${image})`}}>
+        
+        <div className="flex flex-col text-center h-1/2">
+          <p className="font-semibold text-5xl mt-20 pt-20 text-gray-500">
             ROOMS EVERYWHERE
           </p>
-          <div className="flex flex-row left-1/2 bg-white py-5 px-5 rounded-xl mt-20">
+          <div className="flex flex-row bg-white py-5 px-5 rounded-xl mt-20 w-1/2 self-center">
             <input
               type="search"
               id="search"
               name="search"
-              className=" italic text-gray-600 text-sm px-20 outline-none"
+              className=" italic text-gray-600 text-sm px-15 outline-none w-80"
               placeholder="search location"
               onChange={(e) => setSearch(e.target.value)}
             />
-
-            { search && 
-            <Link to={`/Search/${search}`}>
+            <input
+            type="number"
+            min="0"
+            placeholder="Min Price"
+            value={minPrice}
+            className="w-30 italic text-sm"
+            onChange={(e) => setMinPrice(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Max Price"
+            value={maxPrice}
+            className="w-30 italic text-sm"
+            onChange={(e) => setMaxPrice(e.target.value)}
+          />
+            { (search || minPrice || maxPrice) && 
+            <Link to={`/Search/${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`}>
               <BiSearch className="text-blue-400 text-lg font-semibold"/>
             </Link>
             }
+            
           </div>
+          
         </div>
       </div>
       <div className="px-5">
@@ -182,6 +206,17 @@ const Home = () => {
         </div>
       </div>
       <Footer />
+      </div>
+      :
+      <div className="flex flex-col items-center mt-20 pt-20">
+        
+      <ClimbingBoxLoader
+      color="gray"
+      size={15}
+      />
+      
+      </div>
+    }
     </div>
   );
 };

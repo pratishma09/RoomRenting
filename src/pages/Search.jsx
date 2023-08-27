@@ -5,13 +5,14 @@ import { BiArrowBack } from "react-icons/bi";
 import Popup from "../components/Popup";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 const Search=()=>{
   const[showPopUp, setShowPopUp]=useState(false);
-  const {search}=useParams()
+  const {search,minPrice,maxPrice}=useParams()
   const [visible, setVisible] = useState(8);
   const [rooms,setRooms]=useState([])
-  console.log(search)
+  const [loading,setLoading]=useState(false);
 
   const showMoreItems = () => {
     setVisible((preValue) => preValue + 4);
@@ -23,12 +24,13 @@ const Search=()=>{
   
   
   useEffect(()=>{
-    if(search){
+    if(search||minPrice || maxPrice){
       axios
-      .get(`http://localhost:8000/api/rooms?search=${search}`)
+      .get(`http://localhost:8000/api/rooms?search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`)
       .then((res) => {
-        console.log(res.data.items);
-        setRooms(res.data.items);
+        console.log(res.data);
+        setRooms(res.data);
+        setLoading(true)
       })
       .catch((err) => {
         console.log(err.msg);
@@ -39,6 +41,9 @@ const Search=()=>{
   
     return(
       <div>
+        {
+          loading?
+        <div>
       <Navbar/>
         <div className="pl-10 pt-10">
             <div className="inline-flex">
@@ -54,7 +59,7 @@ const Search=()=>{
 
             {rooms.slice(0, visible).map((rooms) => (
               <button className="card p-2" onClick={handlePopUp} key={rooms._id}>
-                  <img src={`http://localhost:8000/uploads/${rooms.images}`} />
+                  <img src={`http://localhost:8000/uploads/${rooms.images}`} className="w-[400px] h-[200px]" />
                 <div className="flex flex-row justify-between">
                   <div>
                     <p className="text-blue-400 text-sm">{rooms.address}</p>
@@ -89,6 +94,16 @@ const Search=()=>{
           }
         </div>
         <Footer/>
+        </div>:
+        <div className="flex flex-col items-center mt-20 pt-20">
+        
+        <ClimbingBoxLoader
+        color="gray"
+        size={15}
+        />
+        
+        </div>
+}
         </div>
     )
 }

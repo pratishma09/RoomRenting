@@ -168,7 +168,7 @@ const RoomPost = () => {
               </label>
               <input
                 value={property.phone}
-                type="number"
+                type="number" maxLength="10"
                 className="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="phone"
                 name="phone"

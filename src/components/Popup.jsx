@@ -4,14 +4,14 @@ const Popup = ({ isVisible, onClose, rooms }) => {
   if (!isVisible) return null;
   return (
     <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex flex-row justify-center items-center room-details shadow-xl">
-      <div className="text-blue-400 bg-white min-w-0 max-w-80 h-full px-10  rounded-lg">
+      <div className="text-blue-400 bg-white min-w-0 max-w-80 h-full px-10 rounded-lg">
         <button className="font-semibold my-10 flex justify-start" onClick={() => onClose}>
           X{" "}
         </button>
         <p className="text-2xl font-semibold pb-5 text-start">ABOUT THE ROOM</p>
-        <img src={`http://localhost:8000/uploads/${rooms.images}`} className="w-[450px] pb-10" />
+        <img src={`http://localhost:8000/uploads/${rooms.images}`} className="w-[400px] h-1/2" />
       </div>
-      <div className="min-w-0 max-w-80 px-10 py-8 bg-white rounded-lg text-start">
+      <div className="min-w-0 max-w-80 px-10 py-8 bg-white rounded-lg text-start h-full w-[650px]">
         <div className="flex">
           <p className="font-semibold">Rs. {rooms.price} </p>
           <p className="italic text-gray-300 font-extralight">/month</p>

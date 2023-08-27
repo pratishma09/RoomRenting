@@ -1,0 +1,39 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.loginContainer {
+    min-height: 100vh;
+  }
+@media (max-width: 767px) {
+    /* Small devices (phones) - Horizontal layout */
+    .loginContainer {
+      flex-direction: column;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    /* Medium devices (tablets) - Horizontal layout */
+    .loginContainer {
+      flex-direction: row;
+    }
+  }
+  
+  @media (max-width: 992px),
+         (max-width: 1024px),
+         (max-width: 1280px),
+         (max-width: 480px)
+         {
+    .div-content {
+      display: none;
+    }
+  }
+
+@media (min-width:1280px){
+    .div-content{
+        display:block;
+    }
+}
+  
